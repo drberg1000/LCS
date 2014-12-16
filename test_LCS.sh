@@ -1,5 +1,5 @@
 #String Description
-#gcc LCS_serial.c     -o LCS_serial
+gcc LCS_serial.c     -o LCS_serial
 gcc -fopenmp LCS_omp_diagonal.c -o LCS_omp_diagonal
 
 N=(  Tiny\ Strings\ from\ CLRS
@@ -25,8 +25,12 @@ S=( tests/micro_test_LCS.txt
 
 for ((i=0; i < ${#S1[@]}; i++));
 do
-#   RESULT=$(./LCS_serial ${S1[$i]} ${S2[$i]} | head -1 )
-   RESULT=$(./LCS_omp_diagonal 2 ${S1[$i]} ${S2[$i]} | head -1 )
+   if [ "$1" = "serial" ]
+   then
+      RESULT=$(./LCS_serial ${S1[$i]} ${S2[$i]} | head -1 )
+   else
+      RESULT=$(./LCS_omp_diagonal 4 ${S1[$i]} ${S2[$i]} | head -1 )
+   fi
 
    if [ "$RESULT" = `cat "${S[$i]}"` ] 
    then
