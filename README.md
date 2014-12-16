@@ -2,15 +2,16 @@
 
 This repository currently contains two implementaion of LCS.
 
+- LCS\_serial\_row: runs on one core and fills the matrix row wise.
 - LCS\_serial: runs on one core and fills the matrix in diagonal order.
 - LCS\_omp\_diagonal: accepts a anumber of cores as an argument and uses 
      OpenMP for threading.  Otherwise, it's identical to LCS_serial.
-- LCS\_omp\_Columnar: Uses blocking (or tries) when filling matrix to take 
-     advantage of memory caching.  **This version is not working.**
 
-test_LCS compiles and verifies functionality against micro\_test\*.txt and 
-tiny\_test\*.txt.  If the argument serial is passed, it tests the serial version.  
-Otherwise the omp\_diagonal version is checked.
+test\_LCS compiles and verifies functionality against micro\_test\*.txt and 
+tiny\_test\*.txt.  If the argument correspond to versions as follows:
+- serial   == diagonal wise serial
+- row      ==      row wise serial
+- diagonal == diagonal wise omp
 
 This implementation uses: 
     len_X+len_Y + len_X*8 + (len_X*len_Y)*2

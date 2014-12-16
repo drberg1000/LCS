@@ -1,12 +1,9 @@
-#include <omp.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #define MAX(x, y) (((x) >= (y)) ? (x) : (y))
 #define MIN(x, y) (((x) <= (y)) ? (x) : (y))
-
-int NUMTHREADS=1;
 
 #define gk_clearwctimer(tmr) (tmr = 0.0)
 #define gk_startwctimer(tmr) (tmr -= gk_WClockSeconds())
@@ -43,9 +40,9 @@ char* LCS_read(char *infile);
 double main(int argc, char** argv)
 {
 
-    if( argc != 4 )
+    if( argc != 3 )
     {
-        printf("Usage: %s threads file1 file2\n", argv[0]);
+        printf("Usage: %s file1 file2\n", argv[0]);
         exit(0);
     }
 
@@ -161,25 +158,6 @@ char* LCS_read(char *infile)
 }
 
 
-void print_C_pause(short unsigned int **c, int len_X, int len_Y)
-{
-    int row;
-    int col;
-
-    for (row = 0; row <= len_X; row++)
-    {
-        for (col = 0; col <= len_Y; col++)
-            printf("%3d ", c[row][col]);
-        printf("\n");
-    }
-
-    printf("Press any key to continue.\n");
-    getchar();
-
-    return;
-}
-
-
 double gk_WClockSeconds(void)
 {
 #ifdef __GNUC__
@@ -206,42 +184,20 @@ void LCS_length(char *x, char *y, unsigned short int **c)
     for( colIt = 1; colIt <= len_Y; colIt++ )
         c[0][colIt] = 0;
 
-#pragma omp parallel default(none) \
-                         shared(x, y, c, len_X, len_Y, NUMTHREADS) \
-                         private(rowIt,colIt) \
-                         num_threads(NUMTHREADS)
-    {
-        int mythread = omp_get_thread_num();
-        int row;
-        int col;
-        for(rowIt = 1; rowIt <= len_X; rowIt+=NUMTHREADS)         /* Work with rows rowIt+NUMTHREADS */
+    for(rowIt = 1; rowIt <= len_X; rowIt++){
+        for( colIt = 1; colIt <= len_Y; colIt++  )
         {
-            row = rowIt + mythread;
-            if( row <= len_X )
-            {
-                for( colIt = 1; colIt <= len_Y+NUMTHREADS; colIt++  )
-                {
-                    if( (colIt - mythread >= 0) && (colIt - mythread <= len_Y) ) /* Stagger threads */
-                    {
-                        col = colIt - mythread;
-                        /* Populate c[row][col] with appropriate value */
-                        if(x[row-1] == y[col-1])
-                            /* Strings match so, cell gets NorthWest neighbor + 1 */
-                            c[row][col] = c[row-1][col-1] + 1;
-                        else {
-                            /* Cell gets max of North and West neighbor counts. */
-                            /* Tie goes to the North */
-                            c[row][col] = MAX( c[row-1][col  ], 
-                                               c[row  ][col-1] );
-                        }/* Populated */
-#pragma omp critical
-                        {
-                            printf("My thread: %d\n",  mythread);
-                            print_C_pause(c,len_X,len_Y);
-                        }
-                    }
-                }
+            /* Populate c[rowIt][colIt] with appropriate value */
+            if(x[rowIt-1] == y[colIt-1]) {
+                /* Strings match so, cell gets NorthWest neighbor + 1 */
+                c[rowIt][colIt] = c[rowIt-1][colIt-1] + 1;
             }
+            else {
+                /* Cell gets max of North and West neighbor counts. */
+                /* Tie goes to the North */
+                c[rowIt][colIt] = MAX( c[rowIt-1][colIt  ],
+                                       c[rowIt  ][colIt-1] );
+            }/* Populated */
         }
     }
     return;

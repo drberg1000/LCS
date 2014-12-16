@@ -33,10 +33,6 @@ do
       RESULT=$(./LCS_omp_diagonal 4 ${S1[$i]} ${S2[$i]} | head -1 )
    elif [ "$1" = "column" ]
    then
-      echo "At last check Columnar had debugging code."
-      echo "It expects carriage retuns to proceed."
-      echo "This script won't provide them... Exiting."
-      exit
       RESULT=$(./LCS_omp_Columnar 4 ${S1[$i]} ${S2[$i]} | head -1 )
    else
       echo "Bad Argument"
