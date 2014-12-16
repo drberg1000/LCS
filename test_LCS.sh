@@ -22,7 +22,6 @@ S=( tests/micro_test_LCS.txt
   )
 
 
-
 for ((i=0; i < ${#S1[@]}; i++));
 do
    if [ "$1" = "serial" ]
