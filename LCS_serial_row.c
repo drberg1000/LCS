@@ -46,8 +46,6 @@ double main(int argc, char** argv)
         exit(0);
     }
 
-    NUMTHREADS = atoi(argv[1]);
-
     double timer_total;
     gk_clearwctimer(timer_total);
     gk_startwctimer(timer_total);
@@ -56,8 +54,8 @@ double main(int argc, char** argv)
     double timer_read;
     gk_clearwctimer(timer_read);
     gk_startwctimer(timer_read);
-    char *X = LCS_read(argv[2]);
-    char *Y = LCS_read(argv[3]);
+    char *X = LCS_read(argv[1]);
+    char *Y = LCS_read(argv[2]);
     gk_stopwctimer(timer_read);
 
     int len_X = (int) strlen(X);
@@ -94,7 +92,6 @@ double main(int argc, char** argv)
     gk_stopwctimer(timer_print);
 
     gk_stopwctimer(timer_total);
-    printf("Number of threads: %d\n", NUMTHREADS);
     printf("Time Taken Overall      : %f sec\n", timer_total);
     printf("Time Taken by LCS_read: %f sec\n", timer_read);
     printf("Time Taken by LCS_Length: %f sec\n", timer_length);
