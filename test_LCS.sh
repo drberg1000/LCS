@@ -1,6 +1,7 @@
 #String Description
 gcc LCS_serial.c     -o LCS_serial
 gcc -fopenmp LCS_omp_diagonal.c -o LCS_omp_diagonal
+gcc -fopenmp LCS_omp_Columnar.c -o LCS_omp_Columnar
 
 N=(  Tiny\ Strings\ from\ CLRS
      Long\ Strings\ from\ CLRS
@@ -27,8 +28,19 @@ do
    if [ "$1" = "serial" ]
    then
       RESULT=$(./LCS_serial ${S1[$i]} ${S2[$i]} | head -1 )
-   else
+   elif [ "$1" = "diagonal" ]
+   then
       RESULT=$(./LCS_omp_diagonal 4 ${S1[$i]} ${S2[$i]} | head -1 )
+   elif [ "$1" = "column" ]
+   then
+      echo "At last check Columnar had debugging code."
+      echo "It expects carriage retuns to proceed."
+      echo "This script won't provide them... Exiting."
+      exit
+      RESULT=$(./LCS_omp_Columnar 4 ${S1[$i]} ${S2[$i]} | head -1 )
+   else
+      echo "Bad Argument"
+      exit
    fi
 
    if [ "$RESULT" = `cat "${S[$i]}"` ] 
