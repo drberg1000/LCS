@@ -25,6 +25,7 @@ tiny\_test\*.txt.  If the argument correspond to versions as follows:
 - diagonal == diagonal wise omp
 
 The serial & OpenMP implementations use: 
+
     len_X+len_Y + len_X*8 + (len_X*len_Y)*2
 
 bytes of memory on the heap.  On machine with 4G of RAM two strings of ~46,341 
