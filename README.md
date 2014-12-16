@@ -4,7 +4,7 @@ This repository currently several implementations of LCS.
 
 - LCS\_serial\_row: runs on one core and fills the matrix row wise.
 - LCS\_serial: runs on one core and fills the matrix in diagonal order.
-- LCS\_omp\_diagonal: accepts a anumber of cores as an argument and uses 
+- LCS\_omp: accepts a anumber of cores as an argument and uses 
      OpenMP for threading.  Otherwise, it's identical to LCS_serial.
 - LCS\_mpi: uses the Open Message Passing Interface to create an LCS routine
      that will run on multiple computers in a cluster as well on a multi
