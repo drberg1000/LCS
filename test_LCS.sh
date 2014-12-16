@@ -1,8 +1,12 @@
-#String Description
 gcc          LCS_serial_row.c   -o LCS_serial_row
 gcc          LCS_serial_diag.c  -o LCS_serial_diag
 gcc -fopenmp LCS_omp_diagonal.c -o LCS_omp_diagonal
+mpicc        LCS_mpi.c          -o LCS_mpi
 
+#Note, on my Ubuntu system I needed to install the packages openmpi-bin &
+#  mpi-default-dev.  Then I was able to compile with mpicc and run with mpirun.
+
+#String Description
 N=(  Tiny\ Strings\ from\ CLRS
      Long\ Strings\ from\ CLRS
   )
@@ -34,6 +38,9 @@ do
    elif [ "$1" = "diagonal" ]
    then
       RESULT=$(./LCS_omp_diagonal 4 ${S1[$i]} ${S2[$i]} | head -1 )
+   elif [ "$1" = "mpi" ]
+   then
+      RESULT=$(mpirun -np 4 LCS_mpi ${S1[$i]} ${S2[$i]} | head -1 )
    else
       echo "Bad Argument"
       exit

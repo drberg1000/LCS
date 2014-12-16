@@ -1,11 +1,18 @@
 # Longest Common Substring
 
-This repository currently contains two implementaion of LCS.
+This repository currently several implementations of LCS.
 
 - LCS\_serial\_row: runs on one core and fills the matrix row wise.
 - LCS\_serial: runs on one core and fills the matrix in diagonal order.
 - LCS\_omp\_diagonal: accepts a anumber of cores as an argument and uses 
      OpenMP for threading.  Otherwise, it's identical to LCS_serial.
+- LCS\_mpi: uses the Open Message Passing Interface to create an LCS routine
+     that will run on multiple computers in a cluster as well on a multi
+     core machine. **NOTE** The 12/16/2014 version will not print an LCS.  It
+     only finds it's length. As a result, LCS_mpi fails the test_LCS.sh check.
+      **TODO** Review MPI function calls, clean up code, and replace LCS_Print 
+      with a distributed serial format (ie. each process returns/prints just 
+      it's portion of the LCS.
 
 test\_LCS compiles and verifies functionality against micro\_test\*.txt and 
 tiny\_test\*.txt.  If the argument correspond to versions as follows:
