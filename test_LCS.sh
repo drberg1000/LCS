@@ -1,6 +1,10 @@
+#!/bin/bash
+
+#Compile each version
 gcc          LCS_serial_row.c   -o LCS_serial_row
 gcc          LCS_serial_diag.c  -o LCS_serial_diag
 gcc -fopenmp LCS_omp_diagonal.c -o LCS_omp_diagonal
+gcc          LCS_pthreads.c     -o LCS_pthreads     -lpthread -lm
 mpicc        LCS_mpi.c          -o LCS_mpi
 
 #Note, on my Ubuntu system I needed to install the packages openmpi-bin &
@@ -29,18 +33,21 @@ S=( tests/micro_test_LCS.txt
 
 for ((i=0; i < ${#S1[@]}; i++));
 do
-   if [ "$1" = "serial" ]
+   if [ "$1" = "diagonal" ]
    then
       RESULT=$(./LCS_serial_diag ${S1[$i]} ${S2[$i]} | head -1 )
    elif [ "$1" = "row" ]
    then
       RESULT=$(./LCS_serial_row  ${S1[$i]} ${S2[$i]} | head -1 )
-   elif [ "$1" = "diagonal" ]
+   elif [ "$1" = "omp" ]
    then
       RESULT=$(./LCS_omp_diagonal 4 ${S1[$i]} ${S2[$i]} | head -1 )
    elif [ "$1" = "mpi" ]
    then
       RESULT=$(mpirun -np 4 LCS_mpi ${S1[$i]} ${S2[$i]} | head -1 )
+   elif [ "$1" = "pthreads" ]
+   then
+      RESULT=$(./LCS_pthreads 4 ${S1[$i]} ${S2[$i]} | head -1 )
    else
       echo "Bad Argument"
       exit
