@@ -33,7 +33,7 @@ bytes will cause paging.  The code checks to make sure the above formula is
 under 4\*2^30.  If the strings are longer than this, the program will abort.
 The mpi and pthreads likely use more memory than this but don't yet have the
 same check.  With MPI having the ability to run on multiple machines it's
-it's limits should consider this and be conditionally raised.
+limits should consider this and be conditionally raised.
 
 
 
