@@ -26,6 +26,7 @@ tiny\_test\*.txt.  If the argument correspond to versions as follows:
 
 The serial & OpenMP implementations use: 
     len_X+len_Y + len_X*8 + (len_X*len_Y)*2
+
 bytes of memory on the heap.  On machine with 4G of RAM two strings of ~46,341 
 bytes will cause paging.  The code checks to make sure the above formula is 
 under 4\*2^30.  If the strings are longer than this, the program will abort.
