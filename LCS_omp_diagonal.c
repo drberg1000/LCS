@@ -1,9 +1,12 @@
+#include <omp.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #define MAX(x, y) (((x) >= (y)) ? (x) : (y))
 #define MIN(x, y) (((x) <= (y)) ? (x) : (y))
+
+int NUMTHREADS=1;
 
 #define gk_clearwctimer(tmr) (tmr = 0.0)
 #define gk_startwctimer(tmr) (tmr -= gk_WClockSeconds())
@@ -40,11 +43,13 @@ char* LCS_read(char *infile);
 double main(int argc, char** argv)
 {
 
-    if( argc != 3 )
+    if( argc != 4 )
     {
-        printf("Usage: %s file1 file2\n", argv[0]);
+        printf("Usage: %s threads file1 file2\n", argv[0]);
         exit(0);
     }
+
+    NUMTHREADS = atoi(argv[1]);
 
     double timer_total;
     gk_clearwctimer(timer_total);
@@ -54,8 +59,8 @@ double main(int argc, char** argv)
     double timer_read;
     gk_clearwctimer(timer_read);
     gk_startwctimer(timer_read);
-    char *X = LCS_read(argv[1]);
-    char *Y = LCS_read(argv[2]);
+    char *X = LCS_read(argv[2]);
+    char *Y = LCS_read(argv[3]);
     gk_stopwctimer(timer_read);
 
     int len_X = (int) strlen(X);
@@ -91,6 +96,7 @@ double main(int argc, char** argv)
     gk_stopwctimer(timer_print);
 
     gk_stopwctimer(timer_total);
+    printf("Number of threads: %d\n", NUMTHREADS);
     printf("Time Taken Overall      : %f sec\n", timer_total);
     printf("Time Taken by LCS_read: %f sec\n", timer_read);
     printf("Time Taken by LCS_Length: %f sec\n", timer_length);
@@ -180,10 +186,15 @@ void LCS_length(char *x, char *y, unsigned short int **c)
     for( colIt = 1; colIt <= len_Y; colIt++ )
         c[0][colIt] = 0;
 
+#pragma omp parallel default(none) \
+                         shared(x, y, c, len_X, len_Y) \
+                         private(rowIt,colIt,digIt) \
+                         num_threads(NUMTHREADS)
     /* Step through matrix diagonally ignoring row 0 and column 0 */
     /* Diagonal iteration complicates indices but allows a better
        parallel implementation */
     for(digIt = 2; digIt <= len_X+len_Y; digIt++){
+#pragma omp for
         for(rowIt =  MIN(len_X, digIt-1);
             rowIt >= MAX(1    , digIt-len_Y);
             rowIt--)
